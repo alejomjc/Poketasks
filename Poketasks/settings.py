@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Pokemon.apps.PokemonConfig',
+    'Pokemon',
     'rest_framework',
+    'rest_framework.authtoken',
     'drf_yasg'
 ]
 
@@ -134,27 +135,30 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
+#
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+#
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TIMEZONE = 'UTC'
+# CELERY_DEFAULT_QUEUE = 'default'
+# CELERY_QUEUES = (
+#     Queue('default', Exchange('default'), routing_key='default'),
+# )
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+# CELERY_IMPORTS = (
+#     'Poketasks.tasks',
+# )
 
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TIMEZONE = 'UTC'
-CELERY_DEFAULT_QUEUE = 'default'
-CELERY_QUEUES = (
-    Queue('default', Exchange('default'), routing_key='default'),
-)
-
-CELERY_IMPORTS = (
-    'Poketasks.tasks',
-)
-
-CELERY_BEAT_SCHEDULE = {
-    'mi-tarea': {
-        'task': 'Poketasks.tasks.mi_tarea',
-        'schedule': 5.0,
-    },
-}
+# CELERY_BEAT_SCHEDULE = {
+#     'mi-tarea': {
+#         'task': 'Poketasks.tasks.mi_tarea',
+#         'schedule': 5.0,
+#     },
+# }
