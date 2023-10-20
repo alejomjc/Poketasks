@@ -154,6 +154,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'bluestacksdealejo@gmail.com'
-EMAIL_HOST_PASSWORD = 'QJd8yMhz7B6KWrAX'
+EMAIL_HOST_PASSWORD = '*****'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'bluestacksdealejo@gmail.com'
