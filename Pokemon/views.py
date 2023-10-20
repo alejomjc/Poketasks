@@ -1,46 +1,63 @@
-from requests import Response
-from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.response import Response
+from rest_framework import status
+from drf_spectacular.utils import extend_schema, extend_schema_view
+import json
 from .models import Pokemon, Ability
-import logging
 from .serializers import PokemonSerializer
 from rest_framework import generics
-from .tasks import get_random_pokemon
-from rest_framework.exceptions import AuthenticationFailed
-
-get_random_pokemon.apply_async(countdown=0)
-logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    list=extend_schema(description='Permite agregar la descripcion')
+)
 class PokemonListCreateView(generics.ListCreateAPIView):
     queryset = Pokemon.objects.all()
     serializer_class = PokemonSerializer
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         try:
-            ability_data = request.data.pop('abilities', [])
-            pokemon_name = request.data.get('name')
-            existing_pokemon = Pokemon.objects.filter(name=pokemon_name).exists()
+            ability_data = request.data['abilities']
+            pokemon_name = request.data['name']
 
-            for data in ability_data:
-                ability_info = data.get('ability', {})
-                ability, created = Ability.objects.get_or_create(name=ability_info.get('name'))
+            if not Pokemon.objects.filter(name=pokemon_name).exists():
+                pokemon = Pokemon(name=pokemon_name, api_creation=True)
+                pokemon.save()
 
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            pokemon = serializer.instance
+                for data in ability_data:
+                    ability_info = data['ability']
+                    ability, created = Ability.objects.get_or_create(name=ability_info['name'])
+                    pokemon.ability.add(ability)
+                pokemon.save()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response({'message': 'True'}, status=status.HTTP_200_OK)
+            else:
+                log_data = {
+                    "name": pokemon_name,
+                    "abilities": [ability_info['ability']['name'] for ability_info in ability_data]
+                }
+                save_to_json(log_data)
+                return Response({'message': 'Pokemon have already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as e:
-            raise AuthenticationFailed(detail=str(e))
+        except Exception as error:
+            raise error
 
 
 class PokemonSearchView(generics.ListAPIView):
     serializer_class = PokemonSerializer
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         name = self.request.query_params.get('name', None)
         if name is not None:
             return Pokemon.objects.filter(name__icontains=name)
-        return Pokemon.objects.all()
+        return Pokemon.objects.none()
+
+
+def save_to_json(data):
+    with open('pokemon_logs.log', 'a') as log_file:
+        log_file.write(json.dumps(data) + '\n')
