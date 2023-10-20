@@ -4,21 +4,17 @@ Esta es una aplicación Django llamada "Poketasks" diseñada para gestionar info
 
 ## Características
 
-- Modelo de datos "Pokemon" que incluye campos como nombre, ID, habilidades y otros atributos relevantes.
+- Administración de los modelos desde el Admin de Django que permite a los usuarios listar, buscar y agregar habilidades.
 
-- Vista que permite a los usuarios listar, buscar y agregar habilidades al Pokémon.
-
-- API RESTful que ofrece funcionalidades para crear y buscar Pokémon, con documentación detallada en Swagger.
+- API REST que permite crear y buscar con documentación en Swagger.
 
 - Autenticación implementada para garantizar la seguridad de los endpoints de la API.
 
-- Uso de Celery para ejecutar una tarea que extrae un Pokémon aleatorio cada 35 segundos desde la API externa [pokeapi.co](https://pokeapi.co/), y luego lo envía a la API creada en la aplicación.
+- Uso de Celery para ejecutar una tarea que extrae un información aleatoria cada cierto tiempo desde un API externo, y luego lo envía a la API creada en la aplicación.
 
-- Validación para evitar la inserción de Pokémon repetidos. Si el Pokémon ya existe, se descarta y se intenta con otro.
+- Notificaciones por correo electrónico utilizando Django Signals.
 
-- Notificación por correo electrónico utilizando Django Signals para informar sobre la creación exitosa de un Pokémon mediante la tarea de Celery.
-
-- Registro en un archivo de log de los Pokémon repetidos, junto con sus atributos.
+- Registro de logs de los Pokémon repetidos.
 
 ## Configuración
 
