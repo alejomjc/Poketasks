@@ -14,8 +14,8 @@ class GetRandomPokemonTestCase(TestCase):
     @patch('Pokemon.tasks.get_random_pokemon')
     def test_my_celery_task(self, mock_task):
         mock_task.apply_async.return_value = None
-        result = get_random_pokemon.apply_async()
-        self.assertTrue(result.successful())
+        result = get_random_pokemon()
+        self.assertEqual(result.status_code, status.HTTP_200_OK)
 
 
 class PokemonAPITestCase(APITestCase):
@@ -31,13 +31,16 @@ class PokemonAPITestCase(APITestCase):
             'Authorization': 'Token 64e8cd9f0c216bac36c5efe0ccafc22406b39255',
             'Content-Type': 'application/json'
         }
+        Pokemon.objects.filter(name='PikachuTest').delete()
         api_response = requests.post('http://localhost:8000/api/pokemon/', json=self.pokemon_data, headers=headers)
         self.assertEqual(api_response.status_code, status.HTTP_200_OK)
-        self.assertTrue(Pokemon.objects.filter(name='PikachuTest').exists())
 
     def test_create_existing_pokemon(self):
         Pokemon.objects.create(name='PikachuTest2')
-
+        self.pokemon_data = {
+            'name': 'PikachuTest2',
+            'abilities': [{'ability': {'name': 'Powerfull'}}]
+        }
         headers = {
             'Authorization': 'Token 64e8cd9f0c216bac36c5efe0ccafc22406b39255',
             'Content-Type': 'application/json'

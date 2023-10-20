@@ -19,7 +19,10 @@ def get_random_pokemon(data=None):
                 print(f'Pokemon enviado con éxito a tu API: {pokemon_data["name"]}')
             else:
                 print(f'Error al enviar el Pokémon a tu API: {pokemon_data["name"]}')
+            return api_response
         else:
             print(f'Error al obtener el Pokémon de la API: {response.status_code}')
+            raise 'Error'
     except Exception as e:
         print('error', e)
+        raise 'Error'

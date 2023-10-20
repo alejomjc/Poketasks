@@ -146,7 +146,7 @@ SWAGGER_SETTINGS = {
 CELERY_BEAT_SCHEDULE = {
     'get-random-pokemon': {
         'task': 'Pokemon.tasks.get_random_pokemon',
-        'schedule': 10.0,
+        'schedule': 35.0,
     },
 }
 
