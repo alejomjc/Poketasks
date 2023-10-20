@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Pokemon',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     'drf_yasg'
 ]
 
@@ -136,29 +137,27 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-#
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-#
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_ACCEPT_CONTENT = ['json']
-# CELERY_TIMEZONE = 'UTC'
-# CELERY_DEFAULT_QUEUE = 'default'
-# CELERY_QUEUES = (
-#     Queue('default', Exchange('default'), routing_key='default'),
-# )
 
-# CELERY_IMPORTS = (
-#     'Poketasks.tasks',
-# )
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': True,
+    'LOGIN_URL': '/admin/login'
+}
 
-# CELERY_BEAT_SCHEDULE = {
-#     'mi-tarea': {
-#         'task': 'Poketasks.tasks.mi_tarea',
-#         'schedule': 5.0,
-#     },
-# }
+CELERY_BEAT_SCHEDULE = {
+    'get-random-pokemon': {
+        'task': 'Pokemon.tasks.get_random_pokemon',
+        'schedule': 10.0,
+    },
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'bluestacksdealejo@gmail.com'
+EMAIL_HOST_PASSWORD = 'QJd8yMhz7B6KWrAX'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'bluestacksdealejo@gmail.com'
